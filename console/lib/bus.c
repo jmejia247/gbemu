@@ -2,6 +2,7 @@
 #include <cart.h>
 #include <ram.h>
 #include <cpu.h>
+#include <io.h>
 
 // 0x0000 - 0x3FFF : ROM Bank 0
 // 0x4000 - 0x7FFF : ROM Bank 1 - Switchable
@@ -37,14 +38,16 @@ u8 bus_read(u16 address) {
     } else if (address < 0xFEA0) {
         // OAM TODO
         printf("UNSUPPORTED bus_read(%04X) < 0xFEA0\n", address);
-        NO_IMPL
+        // NO_IMPL
+        return 0x0;
     } else if (address < 0xFF00) {
         // reserved unusable
         return 0;
     } else if (address < 0xFF80) {
         // IO registers TODO
-        printf("UNSUPPORTED bus_read(%04X) < 0xFF80\n", address);
-        NO_IMPL
+        return io_read(address);
+        // NO_IMPL
+        return 0x0;
     } else if (address == 0xFFFF) {
         // CPU enable register todo
         return cpu_get_ie_register();
@@ -59,7 +62,7 @@ void bus_write(u16 address, u8 value) {
     } else if (address < 0xA000) {
         // char / map data
         printf("UNSUPPORTED bus_write(%04X) < 0xA000\n", address);
-        NO_IMPL
+        // NO_IMPL
     } else if (address < 0xC000) {
         // cartridge RAM
         cart_write(address, value);
@@ -71,13 +74,13 @@ void bus_write(u16 address, u8 value) {
     } else if (address < 0xFEA0) {
         // OAM TODO
         printf("UNSUPPORTED bus_write(%04X) < 0xFEA0\n", address);
-        NO_IMPL
+        // NO_IMPL
     } else if (address < 0xFF00) {
         // reserved unusable
     } else if (address < 0xFF80) {
         // IO registers TODO
-        printf("UNSUPPORTED bus_write(%04X) < 0xFF80\n", address);
-        NO_IMPL
+        io_write(address, value);
+        // NO_IMPL
     } else if (address == 0xFFFF) {
         // CPU enable register todo
         cpu_set_ie_register(value);

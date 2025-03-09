@@ -16,12 +16,15 @@ set(SOURCES
     lib/cpu_proc.c
     lib/cpu_util.c
     lib/cpu.c
-    lib/emu.c  # emu.c needs SDL2
+    lib/emu.c
     lib/instructions.c
+    lib/interrupts.c
+    lib/io.c
     lib/ppu.c
     lib/ram.c
     lib/stack.c
     lib/timer.c
+    lib/ui.c
 )
 
 # Create the console library

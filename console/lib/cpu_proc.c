@@ -191,19 +191,38 @@ static void proc_stop(cpu_context * ctx) {
 }
 
 static void proc_daa(cpu_context *ctx) {
+    u8 u = 0;
+    int fc = 0;
 
+    if (CPU_FLAG_H || (!CPU_FLAG_N && (ctx->regs.a & 0xF) > 9)) {
+        u = 6;
+    }
+
+    if (CPU_FLAG_C || (!CPU_FLAG_N && ctx->regs.a > 0x99)) {
+        u |= 0x60;
+        fc = 1;
+    }
+
+    ctx->regs.a += CPU_FLAG_N ? -u : u;
+
+    cpu_set_flags(ctx, ctx->regs.a ==  0, -1, 0, fc);
 }
 
 static void proc_cpl(cpu_context *ctx) {
-
+    ctx->regs.a = ~ctx->regs.a;
+    cpu_set_flags(ctx, -1, 1, 1, -1);
 }
 
 static void proc_scf(cpu_context *ctx) {
-
+    cpu_set_flags(ctx, -1, 0, 0, 1);
 }
 
 static void proc_ccf(cpu_context *ctx) {
+    cpu_set_flags(ctx, -1, 0, 0, CPU_FLAG_C ^ 1);
+}
 
+static void proc_halt(cpu_context *ctx) {
+    ctx->halted = true;
 }
 
 static void proc_and(cpu_context *ctx) {
@@ -225,6 +244,10 @@ static void proc_cp(cpu_context *ctx) {
     int n = (int)ctx->regs.a - (int)ctx->fetched_data;
 
     cpu_set_flags(ctx, n == 0, 1, ((int)ctx->regs.a & 0x0F) - ((int)ctx->fetched_data & 0x0F) < 0, n < 0);
+}
+
+static void proc_ei(cpu_context *ctx) {
+    ctx->enabling_ime = true;
 }
 
 static void proc_di(cpu_context *ctx) {
@@ -267,7 +290,7 @@ static void proc_add(cpu_context *ctx) {
     if (ctx->cur_inst->reg_1 == RT_SP) {
         z = 0;
         h = (cpu_read_reg(ctx->cur_inst->reg_1) & 0xF) + (ctx->fetched_data & 0xF) >= 0x10;
-        c = (int)(cpu_read_reg(ctx->cur_inst->reg_1) & 0xFF) + (int)(ctx->fetched_data & 0xFF) > 0x100;
+        c = (int)(cpu_read_reg(ctx->cur_inst->reg_1) & 0xFF) + (int)(ctx->fetched_data & 0xFF) >= 0x100;
     }
 
     cpu_set_reg(ctx->cur_inst->reg_1, val & 0xFFFF);
@@ -517,6 +540,8 @@ static IN_PROC processors[] = {
     [IN_CPL] = proc_cpl,
     [IN_SCF] = proc_scf,
     [IN_CCF] = proc_ccf,
+    [IN_HALT] = proc_halt,
+    [IN_STOP] = proc_stop,
     [IN_AND] = proc_and,
     [IN_XOR] = proc_xor,
     [IN_OR] = proc_or,
@@ -526,6 +551,7 @@ static IN_PROC processors[] = {
     [IN_LD] = proc_ld,
     [IN_JP] = proc_jp,
     [IN_DI] = proc_di,
+    [IN_EI] = proc_ei,
     [IN_POP] = proc_pop,
     [IN_PUSH] = proc_push,
     [IN_DEC] = proc_dec,
