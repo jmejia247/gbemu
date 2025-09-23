@@ -16,10 +16,12 @@ set(SOURCES
     lib/cpu_proc.c
     lib/cpu_util.c
     lib/cpu.c
+    lib/dma.c
     lib/emu.c
     lib/instructions.c
     lib/interrupts.c
     lib/io.c
+    lib/lcd.c
     lib/ppu.c
     lib/ram.c
     lib/stack.c
