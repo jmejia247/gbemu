@@ -22,6 +22,8 @@ set(SOURCES
     lib/interrupts.c
     lib/io.c
     lib/lcd.c
+    lib/ppu_pipeline.c
+    lib/ppu_sm.c
     lib/ppu.c
     lib/ram.c
     lib/stack.c

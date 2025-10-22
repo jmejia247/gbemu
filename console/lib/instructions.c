@@ -1,5 +1,6 @@
 #include <instructions.h>
 #include <cpu.h>
+#include <bus.h>
 
 // RT = register typr, ld = load, AM = , CT = condition type
 // any missing fields are defaulted to 0
@@ -184,14 +185,14 @@ instruction instructions[0x100] = {
     [0x9F] = {IN_SBC, AM_R_R, RT_A, RT_A},
 
     //0xAX
-    [0xA0] = {IN_ADD, AM_R_R, RT_A, RT_B},
-    [0xA1] = {IN_ADD, AM_R_R, RT_A, RT_C},
-    [0xA2] = {IN_ADD, AM_R_R, RT_A, RT_D},
-    [0xA3] = {IN_ADD, AM_R_R, RT_A, RT_E},
-    [0xA4] = {IN_ADD, AM_R_R, RT_A, RT_H},
-    [0xA5] = {IN_ADD, AM_R_R, RT_A, RT_L},
-    [0xA6] = {IN_ADD, AM_R_MR, RT_A, RT_HL},
-    [0xA7] = {IN_ADD, AM_R_R, RT_A, RT_A},
+    [0xA0] = {IN_AND, AM_R_R, RT_A, RT_B},
+    [0xA1] = {IN_AND, AM_R_R, RT_A, RT_C},
+    [0xA2] = {IN_AND, AM_R_R, RT_A, RT_D},
+    [0xA3] = {IN_AND, AM_R_R, RT_A, RT_E},
+    [0xA4] = {IN_AND, AM_R_R, RT_A, RT_H},
+    [0xA5] = {IN_AND, AM_R_R, RT_A, RT_L},
+    [0xA6] = {IN_AND, AM_R_MR, RT_A, RT_HL},
+    [0xA7] = {IN_AND, AM_R_R, RT_A, RT_A},
     [0xA8] = {IN_XOR, AM_R_R, RT_A, RT_B},
     [0xA9] = {IN_XOR, AM_R_R, RT_A, RT_C},
     [0xAA] = {IN_XOR, AM_R_R, RT_A, RT_D},
@@ -220,11 +221,11 @@ instruction instructions[0x100] = {
     [0xBF] = {IN_CP, AM_R_R, RT_A, RT_A},
 
     [0xC0] = {IN_RET, AM_IMP, RT_NONE, RT_NONE, CT_NZ},
-    [0xC1] = {IN_POP, AM_IMP, RT_BC},
+    [0xC1] = {IN_POP, AM_R, RT_BC},
     [0xC2] = {IN_JP, AM_D16, RT_NONE, RT_NONE, CT_NZ},
     [0xC3] = {IN_JP, AM_D16},
-    [0xC4] = {IN_CALL, AM_D16, RT_NONE,RT_NONE, CT_NZ},
-    [0xC5] = {IN_PUSH, AM_R, RT_DE},
+    [0xC4] = {IN_CALL, AM_D16, RT_NONE, RT_NONE, CT_NZ},
+    [0xC5] = {IN_PUSH, AM_R, RT_BC},
     [0xC6] = {IN_ADD, AM_R_D8, RT_A},
     [0xC7] = {IN_RST, AM_IMP, RT_NONE, RT_NONE, CT_NONE, 0x00},
     [0xC8] = {IN_RET, AM_IMP, RT_NONE, RT_NONE, CT_Z},
@@ -237,9 +238,9 @@ instruction instructions[0x100] = {
     [0xCF] = {IN_RST, AM_IMP, RT_NONE, RT_NONE, CT_NONE, 0x08},
 
     [0xD0] = {IN_RET, AM_IMP, RT_NONE, RT_NONE, CT_NC},
-    [0xD1] = {IN_POP, AM_IMP, RT_DE},
+    [0xD1] = {IN_POP, AM_R, RT_DE},
     [0xD2] = {IN_JP, AM_D16, RT_NONE, RT_NONE, CT_NC},
-    [0xD4] = {IN_CALL, AM_D16, RT_NONE, RT_NONE, CT_Z},
+    [0xD4] = {IN_CALL, AM_D16, RT_NONE, RT_NONE, CT_NC},
     [0xD5] = {IN_PUSH, AM_R, RT_DE},
     [0xD6] = {IN_SUB, AM_R_D8, RT_A},
     [0xD7] = {IN_RST, AM_IMP, RT_NONE, RT_NONE, CT_NONE, 0x10},
@@ -265,15 +266,15 @@ instruction instructions[0x100] = {
 
 
     //0xFX
-    [0xF0] = {IN_LDH, AM_A8_R, RT_A},
+    [0xF0] = {IN_LDH, AM_R_A8, RT_A},
     [0xF1] = {IN_POP, AM_R, RT_AF},
     [0xF2] = {IN_LD, AM_R_MR, RT_A, RT_C},
     [0xF3] = {IN_DI},
-    [0xF5] = {IN_POP, AM_R, RT_AF},
+    [0xF5] = {IN_PUSH, AM_R, RT_AF},
     [0xF6] = {IN_OR, AM_R_D8, RT_A},
     [0xF7] = {IN_RST, AM_IMP, RT_NONE, RT_NONE, CT_NONE, 0x30},
     [0xF8] = {IN_LD, AM_HL_SPR, RT_HL, RT_SP},
-    [0xF9] = {IN_LD, AM_R_R,  RT_SP, RT_HL},
+    [0xF9] = {IN_LD, AM_R_R, RT_SP, RT_HL},
     [0xFA] = {IN_LD, AM_R_A16, RT_A},
     [0xFB] = {IN_EI},
     [0xFE] = {IN_CP, AM_R_D8, RT_A},
@@ -281,10 +282,6 @@ instruction instructions[0x100] = {
 };
 
 instruction *instruction_by_opcode(u8 opcode) {
-    if (instructions[opcode].type == IN_NONE) {
-        return NULL;
-    }
-
     return &instructions[opcode];
 }
 

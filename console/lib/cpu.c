@@ -6,13 +6,16 @@
 
 cpu_context ctx = {0};
 
+#define CPU_DEBUG 0
+
 void cpu_init() {
+    printf("CPU INIT started...\n");
     ctx.regs.pc = 0x100;
     ctx.regs.sp = 0xFFFE;
     *((short *)&ctx.regs.a) = 0xB001;
     *((short *)&ctx.regs.b) = 0x1300;
-    *((short *)&ctx.regs.c) = 0xD800;
-    *((short *)&ctx.regs.d) = 0x4D01;
+    *((short *)&ctx.regs.d) = 0xD800;
+    *((short *)&ctx.regs.h) = 0x4D01;
     ctx.ie_register = 0;
     ctx.int_flags = 0;
     ctx.int_master_enabled = false;
@@ -42,17 +45,18 @@ static void execute() {
 bool cpu_step() {
     
     if (!ctx.halted) {
-        printf("Instruction started...\n");
+        // printf("Instruction started...\n");
         u16 pc = ctx.regs.pc;
 
-        printf("fetching instruction...\n");
+        // printf("fetching instruction...\n");
         fetch_instruction();
-        printf("Instruction: %02X fetched,\nfetching data...\n", ctx.cur_opcode);
-        ASSERT(ctx.cur_inst != NULL, ctx);
+        // printf("Instruction: %02X fetched,\nfetching data...\n", ctx.cur_opcode);
+        // ASSERT(ctx.cur_inst != NULL, ctx);
+        emu_cycles(1);
         fetch_data();
-        printf("Data fetched\n");
+        // printf("Data fetched\n");
 
-        
+#if CPU_DEBUG == 1        
         char flags[16];
         sprintf(flags, "%c%c%c%c", 
             ctx.regs.f & (1 << 7) ? 'Z' : '-',
@@ -79,14 +83,14 @@ bool cpu_step() {
             ctx.regs.h, 
             ctx.regs.l
         );
-
+#endif
         if (ctx.cur_inst == NULL) {
             printf("Unknown Instruction! %02X\n", ctx.cur_opcode);
             exit(-7);
         }
 
         execute();
-        printf("Instruction executed\n -------------------------end of instruction------------------------\n");
+        // printf("Instruction executed\n -------------------------end of instruction------------------------\n");
     } else {
         // halted true
         emu_cycles(1);

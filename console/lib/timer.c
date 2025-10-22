@@ -8,6 +8,7 @@ timer_context *timer_get_context() {
 }
 
 void timer_init() {
+    printf("TIMER INIT...\n");
     ctx.div = 0xAC00;
 }
 
@@ -68,16 +69,11 @@ u8 timer_read(u16 address) {
     switch (address) {
         case 0xFF04:
             return ctx.div >> 8;
-            break;
         case 0xFF05:
             return ctx.tima;
-            break;
         case 0xFF06:
             return ctx.tma;
-            break;
         case 0xFF07:
             return ctx.tac;
-            break;
-
     }
 }

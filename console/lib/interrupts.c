@@ -8,7 +8,7 @@ void int_handle(cpu_context *ctx, u16 address) {
 }
 
 bool int_check(cpu_context *ctx, u16 address, interrupt_type it) {
-    if (ctx->int_flags & IT_VBLANK && ctx->ie_register & it) {
+    if (ctx->int_flags & it && ctx->ie_register & it) {
         // 0x40 is the IT_VBLANK address
         int_handle(ctx, address);
         ctx->int_flags &= ~it;

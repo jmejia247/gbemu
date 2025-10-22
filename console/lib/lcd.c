@@ -7,6 +7,8 @@ static lcd_context ctx;
 static unsigned long colors_default[4] = {0xFFFFFFFF, 0xFFAAAAAA, 0xFF555555, 0xFF000000};
 
 void lcd_init() {
+    printf("LCD INIT...\n");
+    // zero out initial values for lcd 
     ctx.lcdc = 0x91;
     ctx.scroll_x = 0;
     ctx.scroll_y = 0;
@@ -26,13 +28,16 @@ void lcd_init() {
 }
 
 lcd_context *lcd_get_context() {
+    // return address of out ctx variable
     return &ctx; 
 }
 
 u8 lcd_read(u16 address) {
     u8 offset = (address - 0xFF40);
+    // convert ctx into byte array
     u8 *p = (u8 *)&ctx;
 
+    // return byte array at that offset
     return p[offset];
 }
 
@@ -49,6 +54,7 @@ void update_palette(u8 palette_data, u8 pal) {
             break;
     }
 
+    // for each color we are updating 2 bits with the bottom two bits, so we grab them and then shift over by 2 bits
     p_colors[0] = colors_default[palette_data & 0b11];
     p_colors[1] = colors_default[(palette_data >> 2) & 0b11];
     p_colors[2] = colors_default[(palette_data >> 4) & 0b11];
@@ -60,15 +66,19 @@ void lcd_write(u16 address, u8 value) {
     u8 *p = (u8 *)&ctx;
     p[offset] = value;
 
+    // IF our offset it 6, we are at dma
     if (offset == 6) {
         dma_start(value);
     }
 
+    // if we are in the range of the palette
     if (address == 0xFF47) {
         update_palette(value, 0);
     } else if (address == 0xFF48) {
+        // 0b11111100 is to remove last two bits because there is no white color for sprites, its transparent, 1 tells update palate this is a different case 
         update_palette(value & 0b11111100, 1);
     } else if (address == 0xFF49) {
-        update_palette(value & 0b11111100, 1);
+        // should this one be case 2?
+        update_palette(value & 0b11111100, 2);
     }
 }

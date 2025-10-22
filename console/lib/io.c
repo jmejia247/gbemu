@@ -27,7 +27,7 @@ u8 io_read(u16 address) {
         return lcd_read(address);
     }
 
-    printf("UNSUPPORTED bus_read(%04X) < 0xFF80\n", address);
+    printf("UNSUPPORTED bus_read(%04X)\n", address);
     return 0;
 }
 
@@ -57,5 +57,5 @@ void io_write(u16 address, u8 value) {
         return;
     }
 
-    printf("UNSUPPORTED bus_write(%04X) < 0xFF80\n", address);
+    printf("UNSUPPORTED bus_write(%04X)\n", address);
 }

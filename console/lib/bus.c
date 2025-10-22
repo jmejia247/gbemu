@@ -47,10 +47,8 @@ u8 bus_read(u16 address) {
         // reserved unusable
         return 0;
     } else if (address < 0xFF80) {
-        // IO registers TODO
+        // IO registers 
         return io_read(address);
-        // NO_IMPL
-        return 0x0;
     } else if (address == 0xFFFF) {
         // CPU enable register todo
         return cpu_get_ie_register();
@@ -85,7 +83,6 @@ void bus_write(u16 address, u8 value) {
     } else if (address < 0xFF80) {
         // IO registers TODO
         io_write(address, value);
-        // NO_IMPL
     } else if (address == 0xFFFF) {
         // CPU enable register todo
         cpu_set_ie_register(value);
