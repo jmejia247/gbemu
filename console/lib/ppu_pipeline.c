@@ -63,7 +63,7 @@ void pipeline_fetch() {
         if (LCDC_BGW_ENABLE) {
             ppu_get_context()->pfc.bgw_fetch_data[0] = bus_read(LCDC_BG_MAP_AREA + (ppu_get_context()->pfc.map_x / 8) + ((ppu_get_context()->pfc.map_y / 8) * 32));
 
-            if (LCDC_BG_MAP_AREA == 0x8800) {
+            if (LCDC_BGW_DATA_AREA == 0x8800) {
                 ppu_get_context()->pfc.bgw_fetch_data[0] += 128;
             }
         }
@@ -71,11 +71,11 @@ void pipeline_fetch() {
         ppu_get_context()->pfc.fetch_x += 8;
         break;
     case FS_DATA0:
-        ppu_get_context()->pfc.bgw_fetch_data[1] = bus_read(LCDC_BG_MAP_AREA + (ppu_get_context()->pfc.bgw_fetch_data[0] * 16) + ppu_get_context()->pfc.tile_y);
+        ppu_get_context()->pfc.bgw_fetch_data[1] = bus_read(LCDC_BGW_DATA_AREA + (ppu_get_context()->pfc.bgw_fetch_data[0] * 16) + ppu_get_context()->pfc.tile_y);
         ppu_get_context()->pfc.cur_fetch_state = FS_DATA1;
         break;
     case FS_DATA1:
-        ppu_get_context()->pfc.bgw_fetch_data[2] = bus_read(LCDC_BG_MAP_AREA + (ppu_get_context()->pfc.bgw_fetch_data[0] * 16) + ppu_get_context()->pfc.tile_y + 1);
+        ppu_get_context()->pfc.bgw_fetch_data[2] = bus_read(LCDC_BGW_DATA_AREA + (ppu_get_context()->pfc.bgw_fetch_data[0] * 16) + ppu_get_context()->pfc.tile_y + 1);
         ppu_get_context()->pfc.cur_fetch_state = FS_IDLE;
         break;
     case FS_IDLE:

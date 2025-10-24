@@ -17,12 +17,12 @@ void ppu_init() {
     ctx.current_frame = 0;
     ctx.line_ticks = 0;
     // allocate memory for the video buffer
-    ctx.video_buffer = malloc(YRES * XRES * sizeof(32));
+    ctx.video_buffer = malloc(YRES * XRES * sizeof(u32));
     ctx.pfc.line_x = 0;
     ctx.pfc.pushed_x = 0;
     ctx.pfc.fetch_x = 0;
     ctx.pfc.pixel_fifo.size = 0;
-    ctx.pfc.pixel_fifo.head = 0;
+    ctx.pfc.pixel_fifo.head = ctx.pfc.pixel_fifo.tail = NULL;
     ctx.pfc.cur_fetch_state = FS_TILE;
 
     // initialize the lcd and set mode to oam

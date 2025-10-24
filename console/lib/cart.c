@@ -160,7 +160,7 @@ bool cart_load(char *cart) {
     printf("\t ROM Vers : %2.2X\n", ctx.header->version);
 
     u16 x = 0;
-    for (u16 i = 0x0134; i < 0x014C; i++) {
+    for (u16 i = 0x0134; i <= 0x014C; i++) {
         x = x - ctx.rom_data[i] - 1;
     }
 

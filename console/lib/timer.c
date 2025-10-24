@@ -32,8 +32,6 @@ void timer_tick() {
         case 0b11:
             timer_update = (prev_div & (1 << 7)) && (!(ctx.div & (1 << 7)));
             break;
-        default:
-            break;
     }
 
     if (timer_update && ctx.tac & (1 << 2)) {
