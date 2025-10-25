@@ -3,9 +3,6 @@
 #include <string.h>
 #include <ppu_sm.h>
 
-void pipeline_fifo_reset();
-void pipeline_process();
-
 static ppu_context ctx;
 
 ppu_context *ppu_get_context() {
@@ -24,6 +21,10 @@ void ppu_init() {
     ctx.pfc.pixel_fifo.size = 0;
     ctx.pfc.pixel_fifo.head = ctx.pfc.pixel_fifo.tail = NULL;
     ctx.pfc.cur_fetch_state = FS_TILE;
+
+    ctx.line_sprites = 0;
+    ctx.fetched_entry_count = 0;
+    ctx.window_line = 0;
 
     // initialize the lcd and set mode to oam
     lcd_init();

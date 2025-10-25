@@ -54,9 +54,22 @@ typedef struct {
     u8 f_bgp : 1;
 } oam_entry;
 
+typedef struct _oam_line_entry {
+    oam_entry entry;
+    struct _oam_line_entry *next;
+} oam_line_entry;
+
 typedef struct {
     oam_entry oam_ram[40];
     u8 vram[0x2000];
+
+    u8 line_sprite_count; // 0 - 10 sprites
+    oam_line_entry *line_sprites; // linked list of current sprites on line
+    oam_line_entry line_entry_array[10]; // memory to use for list
+
+    u8 fetched_entry_count;
+    oam_entry fetched_entries[3]; // entries fetched during pipeline
+    u8 window_line;
 
     pixel_fifo_context pfc;
 
@@ -76,5 +89,5 @@ void ppu_vram_write(u16 address, u8 value);
 
 ppu_context *ppu_get_context();
 
-void pipeline_fifo_reset();
-void pipeline_process();
+// void pipeline_fifo_reset();
+// void pipeline_process();

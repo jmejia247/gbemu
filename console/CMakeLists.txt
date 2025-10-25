@@ -18,6 +18,7 @@ set(SOURCES
     lib/cpu.c
     lib/dma.c
     lib/emu.c
+    lib/gamepad.c
     lib/instructions.c
     lib/interrupts.c
     lib/io.c
