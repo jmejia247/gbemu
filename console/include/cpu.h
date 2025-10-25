@@ -2,8 +2,8 @@
 
 #include <common.h>
 #include <instructions.h>
-#include <emu.h>
-#include <bus.h>
+// #include <emu.h>
+// #include <bus.h>
 
 typedef struct {
     u8 a;

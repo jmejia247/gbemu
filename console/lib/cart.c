@@ -160,7 +160,7 @@ bool cart_load(char *cart) {
     printf("\t ROM Vers : %2.2X\n", ctx.header->version);
 
     u16 x = 0;
-    for (u16 i = 0x0134; i < 0x014C; i++) {
+    for (u16 i = 0x0134; i <= 0x014C; i++) {
         x = x - ctx.rom_data[i] - 1;
     }
 
@@ -175,5 +175,7 @@ u8 cart_read(u16 address) {
 
 
 void cart_write(u16 address, u8 value) {
-    NO_IMPL
+
+    printf("cart_write(%04X)\n", address);
+    // NO_IMPL
 }

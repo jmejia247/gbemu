@@ -61,7 +61,7 @@ void fetch_data() {
         case AM_R_MR: {
             u16 addr = cpu_read_reg(ctx.cur_inst->reg_2);
 
-            if (ctx.cur_inst->reg_1 == RT_C) {
+            if (ctx.cur_inst->reg_2 == RT_C) {
                 addr |= 0xFF00;
             }
 
@@ -83,14 +83,14 @@ void fetch_data() {
             return;
 
         case AM_HLI_R:
-            ctx.fetched_data = bus_read(cpu_read_reg(ctx.cur_inst->reg_2));
+            ctx.fetched_data = cpu_read_reg(ctx.cur_inst->reg_2);
             ctx.mem_dest = cpu_read_reg(ctx.cur_inst->reg_1);
             ctx.dest_is_mem = true;
             cpu_set_reg(RT_HL, cpu_read_reg(RT_HL) + 1);
             return;
 
         case AM_HLD_R:
-            ctx.fetched_data = bus_read(cpu_read_reg(ctx.cur_inst->reg_2));
+            ctx.fetched_data = cpu_read_reg(ctx.cur_inst->reg_2);
             ctx.mem_dest = cpu_read_reg(ctx.cur_inst->reg_1);
             ctx.dest_is_mem = true;
             cpu_set_reg(RT_HL, cpu_read_reg(RT_HL) - 1);
